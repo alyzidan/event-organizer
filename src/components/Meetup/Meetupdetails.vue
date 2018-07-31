@@ -17,6 +17,7 @@
             <div>
               <h4>{{meetup.title}} </h4>
               <p>{{meetup.date}}</p>
+              <p>{{meetup.description}}</p>
             </div>
           </v-card-text>
           <v-card-actions>

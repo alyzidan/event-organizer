@@ -3,11 +3,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
+import { config } from "./firebase/index";
+import * as Firebase from 'firebase'
 import 'vuetify/dist/vuetify.min.css'
 import { ContentLoader, FacebookLoader, CodeLoader, BulletListLoader, InstagramLoader, ListLoader} from 'vue-content-loader'
 import { store } from "./store/index";
-Vue.use(Vuetify)
 
+Vue.use(Vuetify)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -15,5 +17,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  created () {
+      Firebase.initializeApp(config);
+  }
 })

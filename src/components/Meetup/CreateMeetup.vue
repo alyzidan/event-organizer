@@ -14,6 +14,7 @@
             <v-flex>
               <v-text-field
               label="Name"
+              box
               name="name"
               append-icon="person"
               v-model="title"
@@ -31,19 +32,21 @@
               append-icon="room"
               v-model="location"
               :rules="[() => !!location || 'This field is required']"
+              box
                >
             </v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
             <v-flex>
-              <img :src="photo" alt="photoevent">
+              <img :src="photo" alt="photoevent" height="200">
             </v-flex>
           </v-layout>
           <v-layout row>
             <v-flex>
               <v-text-field
               label="photo"
+              box
               name="photo"
               id="photo"
               append-icon="photo"
@@ -61,7 +64,7 @@
                   v-model="description"
                   append-icon="edit"
                   auto-grow
-                  :rules="[() => !!location || 'This field is required']"
+                  :rules="[() => !!description || 'This field is required']"
                 ></v-textarea>
             </v-flex>
           </v-layout>
@@ -76,6 +79,19 @@
               </v-btn>
             </v-flex>
           </v-layout>
+           <v-layout row wrap>
+             <v-flex xs12 sm6 class="mb-3">
+              <v-date-picker v-model="date"  landscape></v-date-picker>
+              {{date}}
+             </v-flex>
+          </v-layout>
+           <v-layout row wrap>
+             <v-flex xs12 sm6>
+              <v-time-picker v-model="time"  landscape format="24hr"></v-time-picker>
+              {{time}}
+
+             </v-flex>
+          </v-layout>
         </form>
       </v-flex>
     </v-layout>
@@ -89,16 +105,34 @@ data () {
     photo:'',
     title:'',
     location:'',
-    description:''
+    description:'',
+    date:'',
+    time: new Date(),
   }
 },
 computed:{
   isFormValid () {
-    return this.title!='' &&
-           this.location!='' &&
-           this.photo != '' &&
-           this.description !='';
+    return this.title !=='' &&
+           this.location !=='' &&
+           this.photo !== '' &&
+           this.description !== '';
   },
+/*   submittableDateTime () {
+    let date = new Date(this.date);
+    if (typeof this.time === "string") {
+      let hours = this.time.match(/^(\d+)/)[1]
+      const minutes = this.time.match(/:(\d+)/)[1]
+      date.setHours(hours);
+      date.setMinutes(minutes);
+    }else{
+      date.setHours(this.time.getHours())
+      date.setMinutes(this.time.getMinutes())
+    }
+    date.setHours(this.time.getHours());
+    date.setMinutes(this.time.getMinutes());
+    console.log(date);
+    return date
+  } */
 },
     methods:{
       clickme(){
@@ -113,7 +147,7 @@ computed:{
           location: this.location,
           photo: this.photo,
           description: this.description,
-          date: new Date()
+          date: this.date
         }
         this.$store.dispatch('createMeetup', meetUpdata);
         setTimeout(() => {
