@@ -3,12 +3,18 @@
     <v-layout>
       <v-flex>
         <h4 class="primary--text">
-          Create new Meeting
+          Hello REEEM
+
         </h4>
       </v-flex>
     </v-layout>
     <v-layout>
       <v-flex xs12 sm6 offset-md3>
+        <v-layout v-if="error" class="mb-4">
+            <v-flex xs12>
+              <the-alert :message="error" @dismissed="onDismissed"></the-alert>
+            </v-flex>
+          </v-layout>
         <form @submit.prevent="createNewMeetUp">
         <v-layout row>
             <v-flex>
@@ -68,6 +74,11 @@
                 ></v-textarea>
             </v-flex>
           </v-layout>
+          <v-layout row wrap>
+             <v-flex xs12 sm6 class="mb-3">
+              <v-date-picker v-model="date"  landscape></v-date-picker>
+             </v-flex>
+          </v-layout>
           <v-layout row>
             <v-flex xs12 md6 offset-md5>
               <v-btn xs12
@@ -79,19 +90,14 @@
               </v-btn>
             </v-flex>
           </v-layout>
-           <v-layout row wrap>
-             <v-flex xs12 sm6 class="mb-3">
-              <v-date-picker v-model="date"  landscape></v-date-picker>
-              {{date}}
-             </v-flex>
-          </v-layout>
-           <v-layout row wrap>
+
+           <!-- <v-layout row wrap>
              <v-flex xs12 sm6>
               <v-time-picker v-model="time"  landscape format="24hr"></v-time-picker>
               {{time}}
 
              </v-flex>
-          </v-layout>
+          </v-layout> -->
         </form>
       </v-flex>
     </v-layout>
@@ -100,60 +106,52 @@
 <script>
 /* eslint-disable */
 export default {
-data () {
-  return {
-    photo:'',
-    title:'',
-    location:'',
-    description:'',
-    date:'',
-    time: new Date(),
-  }
-},
-computed:{
-  isFormValid () {
-    return this.title !=='' &&
-           this.location !=='' &&
-           this.photo !== '' &&
-           this.description !== '';
+  data() {
+    return {
+      photo: "",
+      title: "",
+      location: "",
+      description: "",
+      date: "",
+      time: new Date()
+    };
   },
-/*   submittableDateTime () {
-    let date = new Date(this.date);
-    if (typeof this.time === "string") {
-      let hours = this.time.match(/^(\d+)/)[1]
-      const minutes = this.time.match(/:(\d+)/)[1]
-      date.setHours(hours);
-      date.setMinutes(minutes);
-    }else{
-      date.setHours(this.time.getHours())
-      date.setMinutes(this.time.getMinutes())
+  computed: {
+    isFormValid() {
+      return (
+        this.title !== "" &&
+        this.location !== "" &&
+        this.photo !== "" &&
+        this.description !== ""
+      );
+    },
+    error() {
+      return this.$store.getters.getErrorState;
+    },
+    loading() {
+      return this.$store.getters.getLoadingState;
     }
-    date.setHours(this.time.getHours());
-    date.setMinutes(this.time.getMinutes());
-    console.log(date);
-    return date
-  } */
-},
-    methods:{
-      clickme(){
-        console.log('clicked');
-      },
-      createNewMeetUp () {
-        if (!this.isFormValid) {
-          return
-        }
-        const meetUpdata = {
-          title: this.title,
-          location: this.location,
-          photo: this.photo,
-          description: this.description,
-          date: this.date
-        }
-        this.$store.dispatch('createMeetup', meetUpdata);
-        setTimeout(() => {
-          this.$router.push('/meetups');
-        }, 1000);
+  },
+  methods: {
+    onDismissed() {
+      this.$store.dispatch("clearError");
+    },
+    createNewMeetUp() {
+      if (!this.isFormValid) {
+        return;
       }
+      const meetUpdata = {
+        title: this.title,
+        location: this.location,
+        photo: this.photo,
+        description: this.description,
+        date: this.date
+      };
+      this.$store.dispatch("createMeetup", meetUpdata);
+      // setTimeout(() => {
+      //   this.$router.push("/meetups");
+      // }, 1000);
     }
-}
+  }
+};
 </script>

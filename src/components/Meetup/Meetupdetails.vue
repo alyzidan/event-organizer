@@ -16,6 +16,7 @@
           <v-card-text>
             <div>
               <h4>{{meetup.title}} </h4>
+         <!-- <h4>{{meetup.title | truncate(14) }} </h4> -->
               <p>{{meetup.date}}</p>
               <p>{{meetup.description}}</p>
             </div>

@@ -36,7 +36,7 @@
           right
           router
           class="primary--text"
-          v-for="item in menuItems"
+          v-for="item in DynamicMenuItems"
           :to="item.route"
           :key="item.title">
           <v-icon left dark>{{item.icon}}</v-icon>
@@ -76,7 +76,7 @@
     >
     <v-list dense>
         <v-list-tile
-          v-for="item in menuItems"
+          v-for="item in DynamicMenuItems"
           :key="item.title"
           :to="item.route"
           @click.stop="left = !left">
@@ -92,6 +92,14 @@
       <v-content>
         <router-view></router-view>
       </v-content>
+      <v-layout v-if="success" transition="scale-transition" class="floating">
+        <v-flex>
+          <v-container fluid>
+            <success :message="success.message" @dismissed="onDismissed"></success>
+          </v-container>
+        </v-flex>
+      </v-layout>
+
     <v-navigation-drawer
       v-model="right"
       right
@@ -109,6 +117,30 @@
 <script>
 /* eslint-disable */
   export default {
+    computed : {
+      success () {
+        return this.$store.getters.getSuccessState
+      },
+      DynamicMenuItems () {
+        if (this.$store.getters.getUser !== null && this.$store.getters.getUser !== undefined) {
+          return [
+            {icon: 'supervisor_account', title: 'View Meetups', route:'/meetups'},
+            {icon: 'room', title: 'Organize Meetup', route:'/new'},
+            {icon: 'person', title: 'Profile', route:'/profile'}
+          ]
+        } else {
+          return [
+            {icon: 'face', title: 'Sign up', route:'/signup'},
+            {icon: 'lock_open', title: 'Sign in', route:'/signin'}
+          ]
+        }
+      }
+    },
+    methods : {
+      onDismissed () {
+        this.$store.dispatch('clearSuccess');
+      }
+    },
     data () {
       return {
         drawer: false,
@@ -129,3 +161,12 @@
     }
   }
 </script>
+<style>
+.floating{
+  position: fixed !important ;
+  z-index: 9999999;
+  bottom: 45px;
+  right:10px;
+  width:350px
+}
+</style>

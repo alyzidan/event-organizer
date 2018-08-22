@@ -5,10 +5,30 @@
           <v-btn large router to="/meetups" class="info"> view meetups </v-btn>
         </v-flex>
         <v-flex xs12 sm6 class="text-xs-center text-sm-center">
-          <v-btn large router to="/meetups/new" class="warning"> Create meetup </v-btn>
+          <v-btn large router to="/new" class="warning"> Create meetup </v-btn>
         </v-flex>
       </v-layout>
-      <v-layout row wrap>
+      <v-layout row wrap v-if="!contentLoaderState">
+        <v-container>
+          <v-flex xs12 class="text-xs-center text-sm-center">
+          <content-loader
+            :height="475"
+            :width="1137"
+            :speed="1"
+            primaryColor="#d7d7d7"
+            secondaryColor="#ecebeb"
+          >
+            <circle cx="550" cy="450" r="7" />
+            <circle cx="570" cy="450" r="7" />
+            <circle cx="590" cy="450" r="7" />
+            <circle cx="610" cy="450" r="7" />
+            <rect x="100" y="30" rx="5" ry="5" width="950" height="400" />
+          </content-loader>
+          </v-flex>
+        </v-container>
+
+      </v-layout>
+      <v-layout row wrap v-if="contentLoaderState">
         <v-flex xs12 class="mt-4">
           <v-carousel
               delimiter-icon="stop"
@@ -25,17 +45,7 @@
               @click="onLoadMeetup(slide.id)"
               style="cursor:pointer">{{slide.title}}</h1
               ></v-carousel-item>
-
             </v-carousel>
-            <!-- <ContentLoader
-            :height="160"
-            :width="1000"
-            :speed="1"
-            primaryColor="#d7d7d7"
-            secondaryColor="#ecebeb">
-              <rect x="0" y="0" rx="3" ry="3" width="50" height="10" />
-              <rect x="200" y="0" rx="3" ry="3" width="50" height="10" />
-            </ContentLoader> -->
         </v-flex>
       </v-layout>
       <v-layout>
@@ -91,7 +101,27 @@
             </v-container>
           </v-flex>
       </v-layout>
-
+      <v-layout>
+        <v-flex>
+          <div>
+    <div class="text-xs-center">
+      <v-btn
+        color="primary"
+        @click="alert = !alert"
+      >
+        Toggle
+      </v-btn>
+    </div>
+    <v-alert
+      :value="alert"
+      type="success"
+      transition="fade-transition"
+    >
+      This is a success alert.
+    </v-alert>
+  </div>
+        </v-flex>
+        </v-layout>
     <!-- <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
         <img src="@/assets/logo.png" alt="Vuetify.js" class="mb-5">
@@ -111,9 +141,20 @@
   /* eslint-disable */
 import {ContentLoader, FacebookLoader, CodeLoader, BulletListLoader, InstagramLoader, ListLoader} from 'vue-content-loader'
 export default {
+  data () {
+    return {
+              alert: true
+    }
+  },
+  created () {
+    this.$store.dispatch('loadMeetUp');
+  },
   computed:{
     slides () {
-      return this.$store.getters.loadedMeetups
+      return this.$store.getters.featuredMeetupForCarousel
+    },
+    contentLoaderState () {
+      return this.$store.getters.getMainEventState
     }
   },
 methods:{
